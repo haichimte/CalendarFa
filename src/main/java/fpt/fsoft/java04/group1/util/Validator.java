@@ -86,13 +86,7 @@ public class Validator {
                     Date currentDate = new Date();
                     Date inputDate = dateFormat.parse(input);
                     currentDate = dateFormat.parse(dateFormat.format(currentDate));
-
-                    if (!inputDate.after(currentDate)) {
-                        return input;
-                    }
-                    else {
-                        System.out.println("Must be today or past");
-                    }
+                    return input;
                 }
                 catch (Exception e) {
                     System.out.println("Wrong day");
