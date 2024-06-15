@@ -1,0 +1,48 @@
+-------------------------------------------------------------------------------
+Test set: CommonTest
+-------------------------------------------------------------------------------
+Tests run: 6, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.185 s <<< FAILURE! -- in CommonTest
+CommonTest.groupedAssertions -- Time elapsed: 0.010 s <<< FAILURE!
+org.opentest4j.MultipleFailuresError: 
+person (1 failure)
+	org.opentest4j.AssertionFailedError: expected: <2> but was: <3>
+	at org.junit.jupiter.api.AssertAll.assertAll(AssertAll.java:80)
+	at org.junit.jupiter.api.AssertAll.assertAll(AssertAll.java:44)
+	at org.junit.jupiter.api.Assertions.assertAll(Assertions.java:2961)
+	at CommonTest.groupedAssertions(CommonTest.java:55)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	Suppressed: org.opentest4j.AssertionFailedError: expected: <2> but was: <3>
+		at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:151)
+		at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+		at org.junit.jupiter.api.AssertEquals.failNotEqual(AssertEquals.java:197)
+		at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:182)
+		at org.junit.jupiter.api.AssertEquals.assertEquals(AssertEquals.java:177)
+		at org.junit.jupiter.api.Assertions.assertEquals(Assertions.java:1145)
+		at CommonTest.lambda$groupedAssertions$4(CommonTest.java:57)
+		at org.junit.jupiter.api.AssertAll.lambda$assertAll$0(AssertAll.java:68)
+		at java.base/java.util.stream.ReferencePipeline$3$1.accept(ReferencePipeline.java:212)
+		at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Spliterators.java:1024)
+		at java.base/java.util.stream.AbstractPipeline.copyInto(AbstractPipeline.java:556)
+		at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(AbstractPipeline.java:546)
+		at java.base/java.util.stream.ReduceOps$ReduceOp.evaluateSequential(ReduceOps.java:921)
+		at java.base/java.util.stream.AbstractPipeline.evaluate(AbstractPipeline.java:265)
+		at java.base/java.util.stream.ReferencePipeline.collect(ReferencePipeline.java:702)
+		at org.junit.jupiter.api.AssertAll.assertAll(AssertAll.java:77)
+		... 6 more
+
+CommonTest.timeoutExceeded -- Time elapsed: 0.117 s <<< FAILURE!
+org.opentest4j.AssertionFailedError: execution exceeded timeout of 100 ms by 11 ms
+	at org.junit.jupiter.api.AssertionFailureBuilder.build(AssertionFailureBuilder.java:152)
+	at org.junit.jupiter.api.AssertionFailureBuilder.buildAndThrow(AssertionFailureBuilder.java:132)
+	at org.junit.jupiter.api.AssertTimeout.assertTimeout(AssertTimeout.java:81)
+	at org.junit.jupiter.api.AssertTimeout.assertTimeout(AssertTimeout.java:57)
+	at org.junit.jupiter.api.AssertTimeout.assertTimeout(AssertTimeout.java:39)
+	at org.junit.jupiter.api.AssertTimeout.assertTimeout(AssertTimeout.java:35)
+	at org.junit.jupiter.api.Assertions.assertTimeout(Assertions.java:3294)
+	at CommonTest.timeoutExceeded(CommonTest.java:45)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+

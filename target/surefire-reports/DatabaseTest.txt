@@ -1,0 +1,31 @@
+-------------------------------------------------------------------------------
+Test set: DatabaseTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.605 s <<< FAILURE! -- in DatabaseTest
+DatabaseTest.connectedTesting -- Time elapsed: 0.032 s <<< ERROR!
+java.lang.RuntimeException: com.microsoft.sqlserver.jdbc.SQLServerException: Login failed for user 'sa'. ClientConnectionId:91484f8a-6261-4814-b9f2-f503ede7fcff
+	at fpt.fsoft.fi.dao.DBUntil.getCon(DBUntil.java:40)
+	at DatabaseTest.connectedTesting(DatabaseTest.java:26)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:580)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1597)
+Caused by: com.microsoft.sqlserver.jdbc.SQLServerException: Login failed for user 'sa'. ClientConnectionId:91484f8a-6261-4814-b9f2-f503ede7fcff
+	at com.microsoft.sqlserver.jdbc.SQLServerException.makeFromDatabaseError(SQLServerException.java:261)
+	at com.microsoft.sqlserver.jdbc.TDSTokenHandler.onEOF(tdsparser.java:316)
+	at com.microsoft.sqlserver.jdbc.TDSParser.parse(tdsparser.java:137)
+	at com.microsoft.sqlserver.jdbc.TDSParser.parse(tdsparser.java:42)
+	at com.microsoft.sqlserver.jdbc.SQLServerConnection.sendLogon(SQLServerConnection.java:6881)
+	at com.microsoft.sqlserver.jdbc.SQLServerConnection.logon(SQLServerConnection.java:5428)
+	at com.microsoft.sqlserver.jdbc.SQLServerConnection$LogonCommand.doExecute(SQLServerConnection.java:5360)
+	at com.microsoft.sqlserver.jdbc.TDSCommand.execute(IOBuffer.java:7748)
+	at com.microsoft.sqlserver.jdbc.SQLServerConnection.executeCommand(SQLServerConnection.java:4410)
+	at com.microsoft.sqlserver.jdbc.SQLServerConnection.connectHelper(SQLServerConnection.java:3847)
+	at com.microsoft.sqlserver.jdbc.SQLServerConnection.login(SQLServerConnection.java:3372)
+	at com.microsoft.sqlserver.jdbc.SQLServerConnection.connectInternal(SQLServerConnection.java:3197)
+	at com.microsoft.sqlserver.jdbc.SQLServerConnection.connect(SQLServerConnection.java:1971)
+	at com.microsoft.sqlserver.jdbc.SQLServerDriver.connect(SQLServerDriver.java:1263)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:682)
+	at java.sql/java.sql.DriverManager.getConnection(DriverManager.java:230)
+	at fpt.fsoft.fi.dao.DBUntil.getCon(DBUntil.java:38)
+	... 4 more
+
