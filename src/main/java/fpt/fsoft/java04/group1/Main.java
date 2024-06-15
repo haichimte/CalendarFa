@@ -73,7 +73,7 @@ public class Main {
                     break;
                 }
                 case 3: {
-                    eventNormal.RemoveEvent();
+                    eventNormal.RemoveEvent(3);
                     break;
                 }
                 case 4: {

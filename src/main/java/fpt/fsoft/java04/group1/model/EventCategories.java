@@ -14,6 +14,10 @@ public class EventCategories {
             this.categoryId = categoryId;
             this.categoryName = categoryName;
         }
+    public EventCategories(int categoryId) {
+        this.categoryId = categoryId;
+
+    }
 
         public int getCategoryId() {
             return categoryId;

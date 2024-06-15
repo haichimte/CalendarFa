@@ -19,25 +19,10 @@ public class ImportantEvents {
     static ImportantEventDao importantEventDao=new ImportantEventDao();
     DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     Validator va = new Validator();
+    EventNormal eventNormal = new EventNormal();
     //Add
     public void AddImportantEvents() {
-        System.out.println("Type Title: \n");
-        String title = sc.nextLine();
-        System.out.println("Type Description: \n");
-        String description = sc.nextLine();
-
-
-        System.out.println("Type Start Date (pls type dd/MM/yyyy HH:mm:ss): \n");
-        String startDate = sc.nextLine();
-        System.out.println("Type End Date:(pls type dd/MM/yyyy HH:mm:ss) \n");
-        String endDate = sc.nextLine();
-        java.sql.Timestamp Start = java.sql.Timestamp.valueOf(startDate);
-        java.sql.Timestamp End = java.sql.Timestamp.valueOf(endDate);
-
-        System.out.println("Type Location: ");
-        String location = sc.nextLine();
-        Event event = new Event(title,description,Start,End,location ,new EventCategories());
-        normalEventDao.AddEvent(event);
+        eventNormal.AddEvent();
         int id = importantEventDao.getLastestEventId();
         System.out.println("PriorityLevel : Click 3 to Important , 4 to ExtremlY Important , 5 to Related to Your Life\n");
         int priority = sc.nextInt();
@@ -77,11 +62,15 @@ public class ImportantEvents {
     }
 
     private static String truncate(String str, int maxLength) {
+        if (str == null) {
+            return "";  // Hoặc một giá trị mặc định khác
+        }
         if (str.length() <= maxLength) {
             return str;
         }
         return str.substring(0, maxLength - 3) + "...";
     }
+
     public void updateImportantEvents(){
 
         int id = va.getInt("Type Id you want to update:","Enter Id > 0","Enter id < 10000","ENTER ID",1,10000);

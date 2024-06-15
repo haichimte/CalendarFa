@@ -1,7 +1,9 @@
 package fpt.fsoft.java04.group1.common;
 
+import fpt.fsoft.java04.group1.dao.CategoryDao;
 import fpt.fsoft.java04.group1.dao.ImportantEventDao;
 import fpt.fsoft.java04.group1.dao.NormalEventDao;
+import fpt.fsoft.java04.group1.dao.eventParticipantsDao;
 import fpt.fsoft.java04.group1.model.Event;
 import fpt.fsoft.java04.group1.model.EventCategories;
 import fpt.fsoft.java04.group1.util.Validator;
@@ -21,6 +23,8 @@ public class EventNormal {
    ImportantEventDao importantEventDao = new ImportantEventDao();
     DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     Validator va = new Validator();
+    CategoryDao categoryDao = new CategoryDao();
+    eventParticipantsDao participantsDao = new eventParticipantsDao();
     //Add
     public void AddEvent() {
 
@@ -48,16 +52,21 @@ public class EventNormal {
         }
         System.out.println("Type Location: ");
         String location = sc.nextLine();
-        Event event = new Event(title, description, Start, End, location,new EventCategories());
+        System.out.println("Select type category you want ");
+        int idCategory = selectCategoryId();
+
+        Event event = new Event(title, description, Start, End, location,new EventCategories(idCategory));
         normalEventDao.AddEvent(event);
         System.out.println("Event added");
     }
-    public void RemoveEvent() {
+    public void RemoveEvent(int userId) {
         System.out.println("=============== Remove Event ================");
         int id = va.ValidateId("Type Id Event You Want to Remove: ", "Input must be Integer", "Input must be > 0", va.REGEX_PHONE);
         Event eventid = normalEventDao.GetEventbyId(id);
         if (eventid != null) {
+
             normalEventDao.DeleteEvent(id);
+            String rulust = participantsDao.DeleteEventParticipants(id,userId);
             System.out.println("Event " + id + " removed");
         } else {
             System.out.println("Wrong Id");
@@ -94,7 +103,9 @@ public class EventNormal {
             ////////////////////////////////////////
             System.out.println("Type Location: ");
             String location = sc.nextLine();
-            String event = normalEventDao.UpdateEvent(id, title, description, Start, End, location,1);
+            System.out.println("Select type cate you want: ");
+            int cate = selectCategoryId();
+            String event = normalEventDao.UpdateEvent(id, title, description, Start, End, location,cate);
         } else {
             System.out.println("============ Wrong Id =================");
         }
@@ -173,12 +184,113 @@ public class EventNormal {
 
         System.out.format("+------------+--------------------------------+----------------------------------------------------+----------------------+----------------------+--------------------------------+%n");
     }
+    private int selectCategoryId() {
+        List<EventCategories> cate = categoryDao.listCategories();
 
-    public static String truncate(String str, int maxLength) {
+        // In ra danh sách các category
+        System.out.println("Existing Categories:");
+        for (EventCategories ec : cate) {
+            System.out.println("Category ID: " + ec.getCategoryId() + " | Category Name: " + ec.getCategoryName());
+        }
+
+        int choice = -1;
+        boolean validChoice = false;
+
+        do {
+            System.out.println("\nOptions:");
+            System.out.println("1. Select an existing category");
+            System.out.println("2. Create a new category");
+            System.out.println("3. Update an existing category");
+            int option = va.ValidateId("Please choose an option: ", "Input must be Integer", "Input must be > 0", va.REGEX_PHONE);
+
+            switch (option) {
+                case 1:
+                    for (EventCategories ec : cate) {
+                        System.out.println("Category ID: " + ec.getCategoryId() + " | Category Name: " + ec.getCategoryName());
+                    }
+                    // Yêu cầu người dùng nhập ID category để chọn
+                    choice = va.ValidateId("Type Id Category You Want to select: ", "Input must be Integer", "Input must be > 0", va.REGEX_PHONE);
+
+                    // Kiểm tra xem choice có tồn tại trong danh sách category hay không
+                    for (EventCategories ec : cate) {
+                        if (ec.getCategoryId() == choice) {
+                            validChoice = true;
+                            break;
+                        }
+                    }
+
+
+                    // Nếu choice không hợp lệ, in ra thông báo lỗi
+                    if (!validChoice) {
+                        System.out.println("Invalid category ID. Please try again.");
+                    }
+                    break;
+
+                case 2:
+                    // Gọi hàm tạo mới category
+                    createNewCategory();
+                    // Cập nhật lại danh sách các category sau khi tạo mới
+                    cate = categoryDao.listCategories();
+                    break;
+
+                case 3:
+                    // Yêu cầu người dùng nhập ID category để cập nhật
+                    choice = va.ValidateId("Type Id Category You Want to update: ", "Input must be Integer", "Input must be > 0", va.REGEX_PHONE);
+
+                    // Kiểm tra xem choice có tồn tại trong danh sách category hay không
+                    for (EventCategories ec : cate) {
+                        if (ec.getCategoryId() == choice) {
+                            validChoice = true;
+                            break;
+                        }
+                    }
+
+                    // Nếu choice hợp lệ, gọi hàm cập nhật category
+                    if (validChoice) {
+                      updateCategory(choice);
+                        // Cập nhật lại danh sách các category sau khi cập nhật
+                        cate = categoryDao.listCategories();
+                    } else {
+                        System.out.println("Invalid category ID. Please try again.");
+                    }
+                    break;
+
+                default:
+                    System.out.println("Invalid option. Please choose 1, 2, or 3.");
+            }
+        } while (!validChoice);
+
+        return choice;
+    }
+    private void createNewCategory() {
+        // Logic để tạo category mới
+        String name = sc.nextLine();
+        EventCategories newCategory = new EventCategories();
+        newCategory.setCategoryName(name);
+        categoryDao.addNewCategory(newCategory);
+        System.out.println("Category created successfully.");
+    }
+
+    private void updateCategory(int categoryId) {
+        // Logic để cập nhật category
+        String newName = sc.nextLine();
+            categoryDao.updateCategory(categoryId,newName);
+            System.out.println("Category updated successfully.");
+
+    }
+
+
+    private static String truncate(String str, int maxLength) {
+        if (str == null) {
+            return "";  // Hoặc một giá trị mặc định khác
+        }
         if (str.length() <= maxLength) {
             return str;
         }
         return str.substring(0, maxLength - 3) + "...";
     }
+
+
+
     //hetphan2
 }
