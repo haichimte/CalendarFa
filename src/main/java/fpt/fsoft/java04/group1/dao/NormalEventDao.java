@@ -166,13 +166,14 @@ public class NormalEventDao {
     public List<Event> searchEventsByDate(Timestamp startDate, Timestamp endDate) {
         List<Event> events = new ArrayList<>();
         DBUntil dbUntil = new DBUntil();
-        String query = "\tselect e.eventId,e.title,e.[description],e.startTime,e.endTime,e.[location],e.categoryId,ec.categoryName from events e\n" +
-                "\t right join eventsCategories ec\n" +
-                "\ton e.categoryId = ec.categoryId" +
-                "WHERE \n" +
-                "    (e.startTime BETWEEN ? AND ?) OR\n" +
-                "    (e.endTime BETWEEN ? AND ?) OR\n" +
-                "    (e.startTime <= ? AND e.endTime >= ?);";
+        String query = "SELECT e.eventId, e.title, e.description, e.startTime, e.endTime, e.location, ec.categoryId, ec.categoryName " +
+                "FROM events e " +
+                "INNER JOIN eventsCategories ec ON e.categoryId = ec.categoryId " +
+                "WHERE " +
+                "    (e.startTime BETWEEN ? AND ?) OR " +
+                "    (e.endTime BETWEEN ? AND ?) OR " +
+                "    (e.startTime <= ? AND e.endTime >= ?) " +
+                "ORDER BY e.startTime;";
 
         try (Connection conn = dbUntil.getCon();
              PreparedStatement ps = conn.prepareStatement(query);) {
@@ -208,9 +209,10 @@ public class NormalEventDao {
     public List<Event> searchAllEvents() {
         List<Event> events = new ArrayList<>();
         DBUntil dbUntil = new DBUntil();
-        String query = "\tselect e.eventId,e.title,e.[description],e.startTime,e.endTime,e.[location],e.categoryId,ec.categoryName from events e\n" +
-                "\t right join eventsCategories ec\n" +
-                "\ton e.categoryId = ec.categoryId";
+        String query = "SELECT e.eventId, e.title, e.description, e.startTime, e.endTime, e.location, ec.categoryId, ec.categoryName " +
+                "FROM events e " +
+                "INNER JOIN eventsCategories ec ON e.categoryId = ec.categoryId " +
+                "ORDER BY e.startTime";
         try (Connection conn = dbUntil.getCon();
              PreparedStatement ps = conn.prepareStatement(query);) {
             ResultSet rs = ps.executeQuery();
@@ -264,6 +266,80 @@ public class NormalEventDao {
 //        }
 
 
+    }
+
+    public List<Event> searchByMonth(int month, int year) {
+        List<Event> events = new ArrayList<>();
+        DBUntil dbUntil = new DBUntil();
+        String query = "SELECT e.eventId, e.title, e.[description], e.startTime, e.endTime, e.[location], ec.categoryId, ec.categoryName\n" +
+                "FROM events e\n" +
+                "JOIN eventsCategories ec ON e.categoryId = ec.categoryId\n" +
+                "WHERE (MONTH(e.startTime) = ? AND YEAR(e.startTime) = ?) OR (MONTH(e.endTime) = ? AND YEAR(e.endTime) = ?)\n" +
+                "ORDER BY e.startTime";
+
+        try (Connection conn = dbUntil.getCon();
+             PreparedStatement ps = conn.prepareStatement(query);) {
+            ps.setInt(1, month);
+            ps.setInt(2, year);
+            ps.setInt(3, month);
+            ps.setInt(4, year);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Event event = new Event();
+                event.setEventId(rs.getInt("eventId"));
+                event.setTitle(rs.getString("title"));
+                event.setDescription(rs.getString("description"));
+                event.setStartDate(rs.getTimestamp("startTime"));
+                event.setEndDate(rs.getTimestamp("endTime"));
+                event.setLocation(rs.getString("location"));
+
+                EventCategories category = new EventCategories(rs.getInt("categoryId"), rs.getString("categoryName"));
+                event.setCategory(category);
+                events.add(event);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return events;
+    }
+
+    public List<Event> searchByYear(int year) {
+        List<Event> events = new ArrayList<>();
+        DBUntil dbUntil = new DBUntil();
+        String query = "SELECT e.eventId, e.title, e.[description], e.startTime, e.endTime, e.[location], ec.categoryId, ec.categoryName\n" +
+                "FROM events e\n" +
+                "JOIN eventsCategories ec ON e.categoryId = ec.categoryId\n" +
+                "WHERE YEAR(e.startTime) = ? OR YEAR(e.endTime) = ?\n" +
+                "ORDER BY e.startTime";
+
+        try (Connection conn = dbUntil.getCon();
+             PreparedStatement ps = conn.prepareStatement(query);) {
+            ps.setInt(1, year);
+            ps.setInt(2, year);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Event event = new Event();
+                event.setEventId(rs.getInt("eventId"));
+                event.setTitle(rs.getString("title"));
+                event.setDescription(rs.getString("description"));
+                event.setStartDate(rs.getTimestamp("startTime"));
+                event.setEndDate(rs.getTimestamp("endTime"));
+                event.setLocation(rs.getString("location"));
+
+                EventCategories category = new EventCategories(rs.getInt("categoryId"), rs.getString("categoryName"));
+                event.setCategory(category);
+                events.add(event);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return events;
     }
 }
 
