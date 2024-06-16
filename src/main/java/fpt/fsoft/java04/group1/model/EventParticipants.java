@@ -4,6 +4,21 @@ public class EventParticipants {
     private int parricipantId;
     private int eventId;
     private int userId;
+    private User user;
+
+    public EventParticipants(int parricipantId, int eventId, User user) {
+        this.parricipantId = parricipantId;
+        this.eventId = eventId;
+        this.user = user;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
     public EventParticipants(int parricipantId, int eventId, int userId) {
         this.parricipantId = parricipantId;

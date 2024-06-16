@@ -8,6 +8,14 @@ public class User
     private String email;
     private String role;
 
+
+    public User(int userId, String userName, String email) {
+        this.userId = userId;
+        this.userName = userName;
+        this.email = email;
+    }
+
+
     public User( String userName, String password, String email, String role) {
         this.userId = userId;
         this.userName = userName;
