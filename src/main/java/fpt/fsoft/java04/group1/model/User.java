@@ -16,6 +16,12 @@ public class User
         this.role = role;
     }
 
+    public User(int userId, String userName, String email) {
+        this.userId = userId;
+        this.userName = userName;
+        this.email = email;
+    }
+
     public User() {
     }
 

@@ -6,6 +6,7 @@ import fpt.fsoft.java04.group1.dao.NormalEventDao;
 import fpt.fsoft.java04.group1.dao.eventParticipantsDao;
 import fpt.fsoft.java04.group1.model.Event;
 import fpt.fsoft.java04.group1.model.EventCategories;
+import fpt.fsoft.java04.group1.model.EventParticipants;
 import fpt.fsoft.java04.group1.util.Validator;
 
 import java.sql.SQLOutput;
@@ -21,6 +22,7 @@ import java.util.Scanner;
 public class EventNormal {
     Scanner sc = new Scanner(System.in);
     NormalEventDao normalEventDao = new NormalEventDao();
+    eventParticipantsDao eventParticipantsDao = new eventParticipantsDao();
    ImportantEventDao importantEventDao = new ImportantEventDao();
     DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     Validator va = new Validator();
@@ -130,6 +132,7 @@ public class EventNormal {
         if(response.equals("y")) {
             List<Event> events = normalEventDao.searchAllEvents();
             printEvents(events);
+            promptForParticipants();
         }else{
             System.out.println(
                     "Search events:\n" +
@@ -194,17 +197,20 @@ public class EventNormal {
 
                         List<Event> events = normalEventDao.searchEventsByDate(startTimestamp, endTimestamp);
                         printEvents(events);
+                        promptForParticipants();
                         break;
                     case 2:
                         int month = va.getInt("Enter month: ", "error", "error", "error",1,12);
                         int year = va.getInt("Enter year: ", "error", "error", "error",Integer.MIN_VALUE,Integer.MAX_VALUE);
                         List<Event> eventsByMonth = normalEventDao.searchByMonth(month, year);
                         printEvents(eventsByMonth);
+                        promptForParticipants();
                         break;
                     case 3:
                         year = va.getInt("Enter year: ", "error", "error", "error",Integer.MIN_VALUE,Integer.MAX_VALUE);
                         List<Event> eventsByYear = normalEventDao.searchByYear(year);
                         printEvents(eventsByYear);
+                        promptForParticipants();
                         break;
                 }
 
@@ -215,6 +221,51 @@ public class EventNormal {
 
         }
 
+    }
+
+    private void promptForParticipants() {
+        String choice = va.getString("Do you want to see the list of participants for any event (y/n): ", "Must input y or n", va.REGEX_CONFIRMATION);
+        if (choice.equals("y")) {
+            int eventId = va.getInt("Enter the event ID: ", "Error", "Error", "Error", Integer.MIN_VALUE, Integer.MAX_VALUE);
+
+            boolean eventExists = false;
+            List<Event> events = normalEventDao.searchAllEvents();
+            for (Event event : events) {
+                if (event.getEventId() == eventId) {
+                    eventExists = true;
+                    break;
+                }
+            }
+
+            if (eventExists) {
+                System.out.println("=====DisplayParticipants======");
+                List<EventParticipants> participants = eventParticipantsDao.searchByEventId(eventId);
+                printParticipants(participants);
+            } else {
+                System.out.println("Event with ID " + eventId + " not found.");
+            }
+        }
+    }
+
+    private void printParticipants(List<EventParticipants> participants) {
+        if (participants.isEmpty()) {
+            System.out.println("No participants found for this event.");
+            return;
+        }
+
+        String leftAlignFormat = "| %-15s | %-30s | %-30s |%n";
+
+        System.out.format("+-----------------+--------------------------------+--------------------------------+%n");
+        System.out.format("| Participant ID  | Username                       | Email                          |%n");
+        System.out.format("+-----------------+--------------------------------+--------------------------------+%n");
+
+        for (EventParticipants participant : participants) {
+            System.out.format(leftAlignFormat, participant.getParricipantId(),
+                    truncate(participant.getUser().getUserName(), 30),
+                    truncate(participant.getUser().getEmail(), 30));
+        }
+
+        System.out.format("+-----------------+--------------------------------+--------------------------------+%n");
     }
 
     public static void printEvents(List<Event> events) {
@@ -240,6 +291,7 @@ public class EventNormal {
         }
 
         System.out.format("+------------+--------------------------------+----------------------------------------------------+----------------------+----------------------+--------------------------------+----------------------+%n");
+
     }
     private int selectCategoryId() {
         List<EventCategories> cate = categoryDao.listCategories();
