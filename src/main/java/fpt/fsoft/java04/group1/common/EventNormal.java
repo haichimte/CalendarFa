@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Scanner;
@@ -140,32 +141,87 @@ public class EventNormal {
             List<Event> events = normalEventDao.searchAllEvents();
             printEvents(events);
         }else{
+            System.out.println(
+                    "Search events:\n" +
+                            "1. Search event between 2 days\n" +
+                            "2. Search event by month\n" +
+                            "3. Search event by year\n" +
+                            "4.Exist\n");
+
+            int choice = va.getInt("Search: ", "Wrong", "Wrong", "Wrong",1,4);
+
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             dateFormat.setLenient(false);
 
             Timestamp startTimestamp = null;
             Timestamp endTimestamp = null;
-            boolean validDate = false;
+            boolean validStartDate = false;
+            boolean validEndDate = false;
+            Date startDate = null;
+            Date endDate = null;
+            dateFormat.setLenient(false);
 
-            while (!validDate) {
-                try {
-                    System.out.println("Type Start Date(dd/MM/yyyy): ");
-                    String startDateStr = va.getDate();
-                    System.out.println("Type End Date(dd/MM/yyyy): ");
-                    String endDateStr = va.getDate();
+            try {
+                switch (choice) {
+                    case 1:
+                        while (!validStartDate) {
+                            try {
+                                System.out.println("Enter Start Date");
+                                String startDay = va.getString("Enter day: ", "Error", va.REGEX_DAY);
+                                String startMonth = va.getString("Enter month: ", "Error", va.REGEX_MONTH);
+                                String startYear = va.getString("Enter year: ", "Error", va.REGEX_YEAR);
+                                String startDateStr = startDay + "/" + startMonth + "/" + startYear;
 
-                    Date endDate = dateFormat.parse(endDateStr);
-                    Date startDate = dateFormat.parse(startDateStr);
+                                startDate = dateFormat.parse(startDateStr);
+                                validStartDate = true;
+                            } catch (Exception e) {
+                                System.out.println("Invalid Start Date");
+                            }
+                        }
 
-                    startTimestamp = new Timestamp(startDate.getTime());
-                    endTimestamp = new Timestamp(endDate.getTime() + (24 * 60 * 60 * 1000) - 1);
-                    validDate = true;
-                }catch (Exception e){
-                    System.out.println("Invalid Date");
+                        while (!validEndDate) {
+                            try {
+                                System.out.println("Enter End Date");
+                                String endDay = va.getString("Enter day: ", "Error", va.REGEX_DAY);
+                                String endMonth = va.getString("Enter month: ", "Error", va.REGEX_MONTH);
+                                String endYear = va.getString("Enter year: ", "Error", va.REGEX_YEAR);
+                                String endDateStr = endDay + "/" + endMonth + "/" + endYear;
+
+                                endDate = dateFormat.parse(endDateStr);
+
+                                if (endDate.before(startDate)) {
+                                    System.out.println("End Date must be greater than Start Date");
+                                } else {
+                                    validEndDate = true;
+                                }
+                            } catch (Exception e) {
+                                System.out.println("Invalid End Date");
+                            }
+                        }
+
+                        startTimestamp = new Timestamp(startDate.getTime());
+                        endTimestamp = new Timestamp(endDate.getTime() + (24 * 60 * 60 * 1000) - 1);
+
+                        List<Event> events = normalEventDao.searchEventsByDate(startTimestamp, endTimestamp);
+                        printEvents(events);
+                        break;
+                    case 2:
+                        int month = va.getInt("Enter month: ", "error", "error", "error",1,12);
+                        int year = va.getInt("Enter year: ", "error", "error", "error",Integer.MIN_VALUE,Integer.MAX_VALUE);
+                        List<Event> eventsByMonth = normalEventDao.searchByMonth(month, year);
+                        printEvents(eventsByMonth);
+                        break;
+                    case 3:
+                        year = va.getInt("Enter year: ", "error", "error", "error",Integer.MIN_VALUE,Integer.MAX_VALUE);
+                        List<Event> eventsByYear = normalEventDao.searchByYear(year);
+                        printEvents(eventsByYear);
+                        break;
                 }
+
+            } catch (Exception e) {
+                System.out.println("An error occurred while searching for events.");
             }
-            List<Event> events = normalEventDao.searchEventsByDate(startTimestamp,endTimestamp);
-            printEvents(events);
+
 
         }
 
@@ -177,11 +233,11 @@ public class EventNormal {
             return;
         }
 
-        String leftAlignFormat = "| %-10s | %-30s | %-50s | %-20s | %-20s | %-30s |%n";
+        String leftAlignFormat = "| %-10s | %-30s | %-50s | %-20s | %-20s | %-30s | %-20s |%n";
 
-        System.out.format("+------------+--------------------------------+----------------------------------------------------+----------------------+----------------------+--------------------------------+%n");
-        System.out.format("| Event ID   | Title                          | Description                                        | Start Time           | End Time             | Location                       |%n");
-        System.out.format("+------------+--------------------------------+----------------------------------------------------+----------------------+----------------------+--------------------------------+%n");
+        System.out.format("+------------+--------------------------------+----------------------------------------------------+----------------------+----------------------+--------------------------------+----------------------+%n");
+        System.out.format("| Event ID   | Title                          | Description                                        | Start Time           | End Time             | Location                       | Category Name        |%n");
+        System.out.format("+------------+--------------------------------+----------------------------------------------------+----------------------+----------------------+--------------------------------+----------------------+%n");
 
         for (Event event : events) {
             System.out.format(leftAlignFormat, event.getEventId(),
@@ -189,10 +245,11 @@ public class EventNormal {
                     truncate(event.getDescription(), 50),
                     event.getStartDate().toString(),
                     event.getEndDate().toString(),
-                    truncate(event.getLocation(), 30));
+                    truncate(event.getLocation(), 30),
+                    truncate(event.getCategory().getCategoryName(), 20));
         }
 
-        System.out.format("+------------+--------------------------------+----------------------------------------------------+----------------------+----------------------+--------------------------------+%n");
+        System.out.format("+------------+--------------------------------+----------------------------------------------------+----------------------+----------------------+--------------------------------+----------------------+%n");
     }
     private int selectCategoryId() {
         List<EventCategories> cate = categoryDao.listCategories();
