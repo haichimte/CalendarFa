@@ -7,7 +7,7 @@ import fpt.fsoft.java04.group1.util.Validator;
 import java.util.Scanner;
 
 public class UserCommon {
-    public void loginCommon( ) {
+    public User loginCommon( ) {
         Scanner sc = new Scanner(System.in);
         Validator va = new Validator();
 
@@ -23,15 +23,17 @@ public class UserCommon {
                 User user = dao.login(email,password);
                 if (user != null){
                     check = true;
+                    System.out.println("Wellcom "+ user.getUserName());
                 }else {
                     System.out.println("Invalid email or password");
                 }
+                return user;
             }catch (Exception e){
                 System.out.println(e.getMessage());
             }
         }
 
-
+        return null;
 
     }
 }
