@@ -7,8 +7,8 @@ import java.sql.SQLException;
 public class DBUntil {
     private String host = "localhost";
     private String port = "1433";
-    private String user = "thanhhai";
-    private String pass = "1234567";
+    private String user = "sa";
+    private String pass = "12345678";
 
     private String databaseDefault = "present";
 
@@ -43,7 +43,7 @@ public class DBUntil {
     }
 
     public static void main(String[] args) {
-        DBUntil dbUntil = new DBUntil("localhost","1433","quangnguyen", "minhquang2908", "present");
+        DBUntil dbUntil = new DBUntil("localhost","1433","sa", "12345678", "present");
         System.out.println(dbUntil.getCon());
     }
 }

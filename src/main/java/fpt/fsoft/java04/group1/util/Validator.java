@@ -13,6 +13,7 @@ public class Validator {
     public final String REGEX_DAY = "^(0[1-9]|[12][0-9]|3[01])$";
     public final String REGEX_MONTH = "^(0?[1-9]|1[0-2])$";
     public final String REGEX_YEAR = "^(19|20)\\d{2}$";
+    public final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";
 
 
     public String getString(String mess, String error, String regex){
@@ -98,6 +99,23 @@ public class Validator {
             }
         }
 
+    }
+    public String getEmail( String error, String regex){
+        while(true){
+
+            String input = sc.nextLine().trim();
+            if(input.isEmpty()){
+                System.out.println("Cannot be empty");
+            }else{
+                if(input.matches(regex)){
+
+                    return input;
+                }else{
+                    System.out.println(error);
+                    System.out.println("Enter email again: ");
+                }
+            }
+        }
     }
 
 

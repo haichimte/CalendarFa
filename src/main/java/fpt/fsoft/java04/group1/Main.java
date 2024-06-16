@@ -2,6 +2,7 @@ package fpt.fsoft.java04.group1;
 
 import fpt.fsoft.java04.group1.common.EventNormal;
 import fpt.fsoft.java04.group1.common.ImportantEvents;
+import fpt.fsoft.java04.group1.common.UserCommon;
 
 import java.util.Scanner;
 
@@ -11,6 +12,8 @@ public class Main {
     public static void main(String[] args) {
         EventNormal eventNormal = new EventNormal();
         ImportantEvents importantEvents = new ImportantEvents();
+        UserCommon userCommon = new UserCommon();
+        userCommon.loginCommon();
 
         int choice = 0;
         while (true) {

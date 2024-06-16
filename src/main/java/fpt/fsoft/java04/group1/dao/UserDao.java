@@ -12,6 +12,7 @@ import java.util.List;
 
 public class UserDao {
     DBUntil dbUntil = new DBUntil();
+    Connection conn = dbUntil.getCon();
     public List<User> listUser() {
 
         List<User> list = new ArrayList<>();
@@ -34,14 +35,42 @@ public class UserDao {
         return list;
 
     }
+    public User login (String email, String password) {
+        String query = "select*from users\n" +
+                "where email = ? and password = ?";
+        User u = null;
+        try {
+            PreparedStatement ps = conn.prepareStatement(query);
+            ps = conn.prepareStatement(query);
+            ps.setString(1, email);
+            ps.setString(2, password);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                u = new User(rs.getInt(1),
+                        rs.getString(2),
+                        rs.getString(3),
+                        rs.getString(4),
+                        rs.getString(5));
+                System.out.println("Well Come "+ u.getUserName());
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            System.out.println("Not have user");
+        }
+        return u;
+    }
 
+//    public static void main(String[] args) {
+//        UserDao dao = new UserDao();
+//        List<User> list = dao.listUser();
+//        for (User u : list) {
+//            System.out.println(u);
+//
+//        }
+//    }
     public static void main(String[] args) {
         UserDao dao = new UserDao();
-        List<User> list = dao.listUser();
-        for (User u : list) {
-            System.out.println(u);
-
-        }
+        dao.login("user1@mail.com", "pass1");
     }
 
 }
