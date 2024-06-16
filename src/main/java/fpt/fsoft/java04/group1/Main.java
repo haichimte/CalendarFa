@@ -74,7 +74,7 @@ public class Main {
                     break;
                 }
                 case 3: {
-                    eventNormal.RemoveEvent(5);
+                    eventNormal.RemoveEvent(userId);
                     break;
                 }
                 case 4: {

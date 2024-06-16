@@ -8,7 +8,8 @@ import java.sql.*;
 
 public class eventParticipantsDao {
     DBUntil dbUntil = new DBUntil();
-    public String DeleteEventParticipants(int eventId,int userId) {
+
+    public String DeleteEventParticipants(int eventId, int userId) {
 
         String result = "Fail";
 
@@ -30,6 +31,7 @@ public class eventParticipantsDao {
         return result;
 
     }
+
     public EventParticipants checkEventExist(int userId, int eventId) {
         EventParticipants event = null;
         DBUntil dbUntil = new DBUntil();
@@ -47,9 +49,9 @@ public class eventParticipantsDao {
                 Timestamp end = rs.getTimestamp("endTime");
                 String location = rs.getString("location");
                 int id = rs.getInt("participantId");
-                int userId1 =rs.getInt("userId");
+                int userId1 = rs.getInt("userId");
                 int eventId2 = rs.getInt("eventId");
-                event = new EventParticipants(id,eventId2,userId1);
+                event = new EventParticipants(id, eventId2, userId1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -57,7 +59,8 @@ public class eventParticipantsDao {
 
         return event;
     }
-    public String addPartipant(int userId, int eventId) {
+
+    public String add(int userId, int eventId) {
         String result = "Fail";
 
         String query = "INSERT INTO [dbo].[eventParticipants]\n" +
@@ -80,5 +83,27 @@ public class eventParticipantsDao {
             e.printStackTrace();
         }
         return result;
+    }
+
+    public String deleteGeneralEvent(int eventId) {
+
+        String result = "Fail";
+        DBUntil dbUntil = new DBUntil();
+        String query = "DELETE FROM [dbo].[eventParticipants]\n" +
+                "WHERE eventId = ?";
+        try (Connection conn = dbUntil.getCon(); PreparedStatement ps = conn.prepareStatement(query);) {
+            ps.setInt(1, eventId);
+            int count = ps.executeUpdate();
+            if (count > 0) {
+                result = "Have " + count + " Deleted";
+            } else {
+                result = "Dont have any deleted record";
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+        return result;
+
     }
 }

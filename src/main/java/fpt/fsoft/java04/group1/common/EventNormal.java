@@ -22,7 +22,7 @@ import java.util.Scanner;
 public class EventNormal {
     Scanner sc = new Scanner(System.in);
     NormalEventDao normalEventDao = new NormalEventDao();
-   ImportantEventDao importantEventDao = new ImportantEventDao();
+    ImportantEventDao importantEventDao = new ImportantEventDao();
     DateFormat df = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     Validator va = new Validator();
     CategoryDao categoryDao = new CategoryDao();
@@ -61,7 +61,8 @@ public class EventNormal {
         normalEventDao.AddEvent(event);
 
         int id = importantEventDao.getLastestEventId();
-         String add = participantsDao.addPartipant(userId,id);
+//        String add = participantsDao.addPartipant(userId,id);
+        String addParticipant = participantsDao.add(userId,id);
         System.out.println("Event added");
     }
     public void RemoveEvent(int userId) {
@@ -121,19 +122,19 @@ public class EventNormal {
             System.out.println("============ Wrong Id =================");
         }
     }
-            public void SearchEvent() {
-                System.out.println("Search");
-                System.out.println("Type Id Event You Want to Search: ");
-                String title = sc.nextLine();
-                List<Event> list=normalEventDao.SearchEvent(title);
-                System.out.printf("%-5s %-20s %-50s %-30s %-30s%n", "ID", "Title", "Description", "Start Date", "End Date");
-                for(Event e:list){
-                    System.out.printf("%-5s %-20s %-50s %-30s %-30s%n", e.getEventId(), e.getTitle(), e.getDescription(), e.getStartDate(),e.getEndDate());
-                }
-            }
+    public void SearchEvent() {
+        System.out.println("Search");
+        System.out.println("Type Id Event You Want to Search: ");
+        String title = sc.nextLine();
+        List<Event> list=normalEventDao.SearchEvent(title);
+        System.out.printf("%-5s %-20s %-50s %-30s %-30s%n", "ID", "Title", "Description", "Start Date", "End Date");
+        for(Event e:list){
+            System.out.printf("%-5s %-20s %-50s %-30s %-30s%n", e.getEventId(), e.getTitle(), e.getDescription(), e.getStartDate(),e.getEndDate());
+        }
+    }
 
 
-//phan2
+    //phan2
     public void searchEventByDate() {
         String response = va.getString("Do you want to display all events(y/n):", "Must input y or n", va.REGEX_CONFIRMATION);
         System.out.println("=====DisplayEvent======");
@@ -251,7 +252,7 @@ public class EventNormal {
 
         System.out.format("+------------+--------------------------------+----------------------------------------------------+----------------------+----------------------+--------------------------------+----------------------+%n");
     }
-    private int selectCategoryId() {
+    protected int selectCategoryId() {
         List<EventCategories> cate = categoryDao.listCategories();
 
         // In ra danh sách các category
@@ -338,8 +339,8 @@ public class EventNormal {
     private void updateCategory(int categoryId) {
         // Logic để cập nhật category
         String newName = sc.nextLine();
-            categoryDao.updateCategory(categoryId,newName);
-            System.out.println("Category updated successfully.");
+        categoryDao.updateCategory(categoryId,newName);
+        System.out.println("Category updated successfully.");
 
     }
 
