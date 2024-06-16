@@ -53,6 +53,7 @@ public class Main {
     private static void ManageNormal(EventNormal eventNormal) {
 
        int choice = 0;
+       int userId =5;
 
         while (true) {
             System.out.println(
@@ -65,7 +66,7 @@ public class Main {
             choice = getChoice();
             switch (choice) {
                 case 1: {
-                    eventNormal.AddEvent();
+                    eventNormal.AddEvent(userId);
                     break;
                 }
                 case 2: {
@@ -73,7 +74,7 @@ public class Main {
                     break;
                 }
                 case 3: {
-                    eventNormal.RemoveEvent(3);
+                    eventNormal.RemoveEvent(5);
                     break;
                 }
                 case 4: {
@@ -90,6 +91,7 @@ public class Main {
     private static void ManageImportantsEvent(ImportantEvents event) {
 
         int choice = 0;
+        int userId = 5;
 
         while (true) {
             event.printImportantEvents();
@@ -103,7 +105,7 @@ public class Main {
 
             switch (choice) {
                 case 1: {
-                    event.AddImportantEvents();
+                    event.AddImportantEvents(userId);
                     break;
                 }
                 case 2: {

@@ -6,6 +6,7 @@ import fpt.fsoft.java04.group1.dao.NormalEventDao;
 import fpt.fsoft.java04.group1.dao.eventParticipantsDao;
 import fpt.fsoft.java04.group1.model.Event;
 import fpt.fsoft.java04.group1.model.EventCategories;
+import fpt.fsoft.java04.group1.model.ImportantEvent;
 import fpt.fsoft.java04.group1.util.Validator;
 
 import java.sql.SQLOutput;
@@ -26,7 +27,7 @@ public class EventNormal {
     CategoryDao categoryDao = new CategoryDao();
     eventParticipantsDao participantsDao = new eventParticipantsDao();
     //Add
-    public void AddEvent() {
+    public void AddEvent( int userId) {
 
         System.out.println("============== Add Event ==============");
         System.out.println("Type Title: \n");
@@ -57,17 +58,26 @@ public class EventNormal {
 
         Event event = new Event(title, description, Start, End, location,new EventCategories(idCategory));
         normalEventDao.AddEvent(event);
+
+        int id = importantEventDao.getLastestEventId();
+         String add = participantsDao.addPartipant(userId,id);
         System.out.println("Event added");
     }
     public void RemoveEvent(int userId) {
         System.out.println("=============== Remove Event ================");
         int id = va.ValidateId("Type Id Event You Want to Remove: ", "Input must be Integer", "Input must be > 0", va.REGEX_PHONE);
         Event eventid = normalEventDao.GetEventbyId(id);
-        if (eventid != null) {
+        ImportantEvent importantEvent = importantEventDao.GetImportantEventbyId(id);
 
-            normalEventDao.DeleteEvent(id);
+        if (eventid != null && importantEvent == null) {
+
+
             String rulust = participantsDao.DeleteEventParticipants(id,userId);
+            normalEventDao.DeleteEvent(id);
             System.out.println("Event " + id + " removed");
+        } else if (eventid != null && importantEvent != null) {
+            System.out.println("Event is a important event cant not to remove ");
+
         } else {
             System.out.println("Wrong Id");
         }
@@ -189,8 +199,9 @@ public class EventNormal {
 
         // In ra danh sách các category
         System.out.println("Existing Categories:");
-        for (EventCategories ec : cate) {
-            System.out.println("Category ID: " + ec.getCategoryId() + " | Category Name: " + ec.getCategoryName());
+        for (int i = 1; i < cate.size(); i++) {
+            EventCategories ec = cate.get(i);
+            System.out.println((i + 1) + ". Category ID: " + ec.getCategoryId() + " | Category Name: " + ec.getCategoryName());
         }
 
         int choice = -1;
@@ -205,24 +216,20 @@ public class EventNormal {
 
             switch (option) {
                 case 1:
-                    for (EventCategories ec : cate) {
-                        System.out.println("Category ID: " + ec.getCategoryId() + " | Category Name: " + ec.getCategoryName());
+                    // In ra danh sách các category từ vị trí thứ 1
+                    for (int i = 1; i < cate.size(); i++) {
+                        EventCategories ec = cate.get(i);
+                        System.out.println((i + 1) + ". Category ID: " + ec.getCategoryId() + " | Category Name: " + ec.getCategoryName());
                     }
                     // Yêu cầu người dùng nhập ID category để chọn
-                    choice = va.ValidateId("Type Id Category You Want to select: ", "Input must be Integer", "Input must be > 0", va.REGEX_PHONE);
+                    int indexChoice = va.ValidateId("Type the number of the Category You Want to select: ", "Input must be Integer", "Input must be > 0", va.REGEX_PHONE);
 
-                    // Kiểm tra xem choice có tồn tại trong danh sách category hay không
-                    for (EventCategories ec : cate) {
-                        if (ec.getCategoryId() == choice) {
-                            validChoice = true;
-                            break;
-                        }
-                    }
-
-
-                    // Nếu choice không hợp lệ, in ra thông báo lỗi
-                    if (!validChoice) {
-                        System.out.println("Invalid category ID. Please try again.");
+                    // Kiểm tra xem lựa chọn có hợp lệ hay không (chỉ từ vị trí thứ 2 trở đi)
+                    if (indexChoice > 1 && indexChoice <= cate.size()) {
+                        choice = cate.get(indexChoice - 1).getCategoryId();
+                        validChoice = true;
+                    } else {
+                        System.out.println("Invalid category number. Please try again.");
                     }
                     break;
 
@@ -234,24 +241,23 @@ public class EventNormal {
                     break;
 
                 case 3:
-                    // Yêu cầu người dùng nhập ID category để cập nhật
-                    choice = va.ValidateId("Type Id Category You Want to update: ", "Input must be Integer", "Input must be > 0", va.REGEX_PHONE);
-
-                    // Kiểm tra xem choice có tồn tại trong danh sách category hay không
-                    for (EventCategories ec : cate) {
-                        if (ec.getCategoryId() == choice) {
-                            validChoice = true;
-                            break;
-                        }
+                    // In ra danh sách các category từ vị trí thứ 1
+                    for (int i = 1; i < cate.size(); i++) {
+                        EventCategories ec = cate.get(i);
+                        System.out.println((i + 1) + ". Category ID: " + ec.getCategoryId() + " | Category Name: " + ec.getCategoryName());
                     }
+                    // Yêu cầu người dùng nhập ID category để cập nhật
+                    indexChoice = va.ValidateId("Type the number of the Category You Want to update: ", "Input must be Integer", "Input must be > 0", va.REGEX_PHONE);
 
-                    // Nếu choice hợp lệ, gọi hàm cập nhật category
-                    if (validChoice) {
-                      updateCategory(choice);
+                    // Kiểm tra xem lựa chọn có hợp lệ hay không (chỉ từ vị trí thứ 2 trở đi)
+                    if (indexChoice > 1 && indexChoice <= cate.size()) {
+                        choice = cate.get(indexChoice - 1).getCategoryId();
+                        validChoice = true;
+                        updateCategory(choice);
                         // Cập nhật lại danh sách các category sau khi cập nhật
                         cate = categoryDao.listCategories();
                     } else {
-                        System.out.println("Invalid category ID. Please try again.");
+                        System.out.println("Invalid category number. Please try again.");
                     }
                     break;
 
@@ -262,6 +268,7 @@ public class EventNormal {
 
         return choice;
     }
+
     private void createNewCategory() {
         // Logic để tạo category mới
         String name = sc.nextLine();

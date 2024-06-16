@@ -21,8 +21,8 @@ public class ImportantEvents {
     Validator va = new Validator();
     EventNormal eventNormal = new EventNormal();
     //Add
-    public void AddImportantEvents() {
-        eventNormal.AddEvent();
+    public void AddImportantEvents(int userId) {
+        eventNormal.AddEvent( userId);
         int id = importantEventDao.getLastestEventId();
         System.out.println("PriorityLevel : Click 3 to Important , 4 to ExtremlY Important , 5 to Related to Your Life\n");
         int priority = sc.nextInt();
