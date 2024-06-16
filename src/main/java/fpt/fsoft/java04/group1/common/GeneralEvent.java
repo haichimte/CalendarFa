@@ -62,28 +62,64 @@ public class GeneralEvent {
 
 
  }
-    public void RemoveGeneralEvent() {
+    public void removeGeneralEvent() {
         System.out.println("=============== Remove Event ================");
         int id = va.ValidateId("Type Id Event You Want to Remove: ", "Input must be Integer", "Input must be > 0", va.REGEX_PHONE);
-        Event eventid = normalEventDao.GetEventbyId(id);
+        Event event = normalEventDao.GetEventbyId(id);
         ImportantEvent importantEvent = importantEventDao.GetImportantEventbyId(id);
 
-        if (eventid != null && importantEvent == null) {
-
-
-            String rulust = participantsDao.deleteGeneralEvent(eventid.getEventId());
-            normalEventDao.DeleteEvent(id);
-            System.out.println("Event " + id + " removed");
-        } else if (eventid != null && importantEvent != null) {
-            System.out.println("Event is a important event cant not to remove ");
-
+        if (event != null && importantEvent == null) {
+            String result = participantsDao.deleteGeneralEvent(event.getEventId());
+            System.out.println(result);
+        } else if (event != null && importantEvent != null) {
+            System.out.println("Event is an important event and cannot be removed.");
         } else {
-            System.out.println("Wrong Id");
+            System.out.println("Wrong Id.");
         }
     }
+    public void updateGeneralEvent() {
+
+            System.out.println("=============== Update Event ================");
+
+            int id = va.ValidateId("Type Id Event You Want to Update: ", "Input must be Integer", "Input must be > 0", va.REGEX_PHONE);
+
+            Event eventid = normalEventDao.GetEventbyIdandCateId(id);
+            if (eventid != null) {
+                System.out.println("Type Title: \n");
+                String title = sc.nextLine();
+                System.out.println("Type Description: \n");
+                String description = sc.nextLine();
+                //validate Date
+                boolean validDate = false;
+                java.sql.Timestamp Start = null;
+                java.sql.Timestamp End = null;
+                while (!validDate) {
+                    try {
+                        System.out.println("Type Start Date (pls type dd/MM/yyyy HH:mm:ss): \n");
+                        String startDate = sc.nextLine();
+                        System.out.println("Type End Date:(pls type dd/MM/yyyy HH:mm:ss) \n");
+                        String endDate = sc.nextLine();
+                        Start = java.sql.Timestamp.valueOf(startDate);
+                        End = java.sql.Timestamp.valueOf(endDate);
+                        validDate = true;
+                    } catch (Exception e) {
+                        System.out.println("Invalid Date pls type dd/MM/yyyy HH:mm:ss");
+                    }
+                }
+                System.out.println("Type Location: ");
+                String location = sc.nextLine();
+
+                String event = normalEventDao.UpdateEvent(id, title, description, Start, End, location,1);
+            } else {
+                System.out.println("============ Wrong Id =================");
+            }
+        }
+
+
 
     public static void main(String[] args) {
         GeneralEvent event = new GeneralEvent();
-        event.addAllEvent();
+        event.updateGeneralEvent();
+//        event.addAllEvent();
     }
 }

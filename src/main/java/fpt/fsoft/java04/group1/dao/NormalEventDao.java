@@ -63,15 +63,11 @@ public class NormalEventDao {
             ps.setString(5, location);
             ps.setInt(6, categoryId);
             int count = ps.executeUpdate();
-            System.out.println("Updated 1");
             if (count > 0) {
-                System.out.println("Updated 2");
                 result = "Have" + count + "Update";
             } else {
-                System.out.println("Updated 3");
                 result = "Don't have update";
             }
-            System.out.println("Updated 4");
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -144,6 +140,7 @@ public class NormalEventDao {
             ResultSet rs = ps.executeQuery();
 
             if (rs.next()) {
+                int eventId = rs.getInt("eventId");
                 String title = rs.getString("title");
                 String description = rs.getString("description");
                 Timestamp start = rs.getTimestamp("startTime");
@@ -152,7 +149,34 @@ public class NormalEventDao {
 
                 // Assuming EventCategories needs to be populated, modify this as needed
                 EventCategories eventCategories = new EventCategories();
-                event = new Event(title, description, start, end, location, eventCategories);
+                event = new Event(eventId,title, description, start, end, location, eventCategories);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return event;
+    }
+    public Event GetEventbyIdandCateId(int id) {
+        Event event = null;
+        DBUntil dbUntil = new DBUntil();
+        String query = "SELECT * FROM events WHERE eventId = ? and categoryId = 1";
+
+        try (Connection conn = dbUntil.getCon(); PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, id);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int eventId = rs.getInt("eventId");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                Timestamp start = rs.getTimestamp("startTime");
+                Timestamp end = rs.getTimestamp("endTime");
+                String location = rs.getString("location");
+
+                // Assuming EventCategories needs to be populated, modify this as needed
+                EventCategories eventCategories = new EventCategories();
+                event = new Event(eventId,title, description, start, end, location, eventCategories);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -235,6 +259,41 @@ public class NormalEventDao {
         }
 
         return events;
+    }
+    public Event checkEventExsist( String title, String description, Timestamp startTime, Timestamp endTime, String location, int categoryId) {
+        Event event = null;
+        DBUntil dbUntil = new DBUntil();
+        String query = "SELECT * FROM events WHERE title = ?" +
+                "and description LIKE ? " +
+                "and location LIKE ? " +
+                "and categoryId = ?";
+                ;
+
+        try (Connection conn = dbUntil.getCon(); PreparedStatement ps = conn.prepareStatement(query)) {
+
+            ps.setString(1, title);
+            ps.setString(2, description);
+            ps.setString(3, location);
+            ps.setInt(4, categoryId);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                int eventId = rs.getInt("eventId");
+                String title1 = rs.getString("title");
+                String description1 = rs.getString("description");
+                Timestamp start = rs.getTimestamp("startTime");
+                Timestamp end = rs.getTimestamp("endTime");
+                String location1 = rs.getString("location");
+
+                // Assuming EventCategories needs to be populated, modify this as needed
+                EventCategories eventCategories = new EventCategories();
+                event = new Event(eventId,title1, description1, start, end, location1, eventCategories);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return event;
     }
 
     //hetphan2

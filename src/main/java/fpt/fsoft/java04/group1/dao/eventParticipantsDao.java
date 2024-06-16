@@ -115,31 +115,48 @@ public class eventParticipantsDao {
                 result = "Dont have added record";
             }
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
             e.printStackTrace();
         }
+
         return result;
     }
 
     public String deleteGeneralEvent(int eventId) {
-
         String result = "Fail";
-        DBUntil dbUntil = new DBUntil();
-        String query = "DELETE FROM [dbo].[eventParticipants]\n" +
-                "WHERE eventId = ?";
-        try (Connection conn = dbUntil.getCon(); PreparedStatement ps = conn.prepareStatement(query);) {
-            ps.setInt(1, eventId);
-            int count = ps.executeUpdate();
-            if (count > 0) {
-                result = "Have " + count + " Deleted";
-            } else {
-                result = "Dont have any deleted record";
+
+        String deleteParticipantsQuery = "DELETE FROM [dbo].[eventParticipants] WHERE eventId = ?";
+        String deleteEventQuery = "DELETE FROM [dbo].[events] WHERE eventId = ?";
+
+        try (Connection conn = dbUntil.getCon()) {
+            conn.setAutoCommit(false);  // Start transaction
+
+            try (PreparedStatement psDeleteParticipants = conn.prepareStatement(deleteParticipantsQuery);
+                 PreparedStatement psDeleteEvent = conn.prepareStatement(deleteEventQuery)) {
+
+                // Delete participants
+                psDeleteParticipants.setInt(1, eventId);
+                psDeleteParticipants.executeUpdate();
+
+                // Delete the event
+                psDeleteEvent.setInt(1, eventId);
+                int count = psDeleteEvent.executeUpdate();
+
+                if (count > 0) {
+                    result = "Event and related participants deleted successfully.";
+                } else {
+                    result = "Event not found.";
+                }
+
+                conn.commit();  // Commit transaction
+            } catch (SQLException e) {
+                conn.rollback();  // Rollback transaction on error
+                e.printStackTrace();
             }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
         return result;
-
     }
+
 }
