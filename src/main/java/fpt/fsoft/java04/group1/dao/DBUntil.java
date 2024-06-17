@@ -43,7 +43,7 @@ public class DBUntil {
     }
 
     public static void main(String[] args) {
-        DBUntil dbUntil = new DBUntil("localhost","1433","sa", "12345678", "present");
+        DBUntil dbUntil = new DBUntil("localhost","1433","quangnguyen", "minhquang2908", "present");
         System.out.println(dbUntil.getCon());
     }
 }
