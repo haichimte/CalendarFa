@@ -140,7 +140,7 @@ public class EventNormal {
         String response = va.getString("Do you want to display all events(y/n):", "Must input y or n", va.REGEX_CONFIRMATION);
         System.out.println("=====DisplayEvent======");
         if(response.equals("y")) {
-            List<Event> events = normalEventDao.searchAllEvents();
+            List<Event> events = normalEventDao.searchAllEvents(UserCommon.loggedInUser.getUserId());
             printEvents(events);
             promptForParticipants();
         }else{
@@ -205,20 +205,20 @@ public class EventNormal {
                         startTimestamp = new Timestamp(startDate.getTime());
                         endTimestamp = new Timestamp(endDate.getTime() + (24 * 60 * 60 * 1000) - 1);
 
-                        List<Event> events = normalEventDao.searchEventsByDate(startTimestamp, endTimestamp);
+                        List<Event> events = normalEventDao.searchEventsByDate(UserCommon.loggedInUser.getUserId(),startTimestamp, endTimestamp);
                         printEvents(events);
                         promptForParticipants();
                         break;
                     case 2:
                         int month = va.getInt("Enter month: ", "error", "error", "error",1,12);
                         int year = va.getInt("Enter year: ", "error", "error", "error",Integer.MIN_VALUE,Integer.MAX_VALUE);
-                        List<Event> eventsByMonth = normalEventDao.searchByMonth(month, year);
+                        List<Event> eventsByMonth = normalEventDao.searchByMonth(UserCommon.loggedInUser.getUserId(),month, year);
                         printEvents(eventsByMonth);
                         promptForParticipants();
                         break;
                     case 3:
                         year = va.getInt("Enter year: ", "error", "error", "error",Integer.MIN_VALUE,Integer.MAX_VALUE);
-                        List<Event> eventsByYear = normalEventDao.searchByYear(year);
+                        List<Event> eventsByYear = normalEventDao.searchByYear(UserCommon.loggedInUser.getUserId(),year);
                         printEvents(eventsByYear);
                         promptForParticipants();
                         break;
@@ -238,7 +238,7 @@ public class EventNormal {
             int eventId = va.getInt("Enter the event ID: ", "Error", "Error", "Error", Integer.MIN_VALUE, Integer.MAX_VALUE);
 
             boolean eventExists = false;
-            List<Event> events = normalEventDao.searchAllEvents();
+            List<Event> events = normalEventDao.searchAllEvents(UserCommon.loggedInUser.getUserId());
             for (Event event : events) {
                 if (event.getEventId() == eventId) {
                     eventExists = true;

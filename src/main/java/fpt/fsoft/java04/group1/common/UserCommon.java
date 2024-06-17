@@ -7,6 +7,7 @@ import fpt.fsoft.java04.group1.util.Validator;
 import java.util.Scanner;
 
 public class UserCommon {
+    public static User loggedInUser;
     public void loginCommon( ) {
         Scanner sc = new Scanner(System.in);
         Validator va = new Validator();
@@ -22,6 +23,7 @@ public class UserCommon {
                 String password = sc.nextLine();
                 User user = dao.login(email,password);
                 if (user != null){
+                    loggedInUser = user;
                     check = true;
                 }else {
                     System.out.println("Invalid email or password");
