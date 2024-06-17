@@ -122,4 +122,50 @@ public class GeneralEvent {
         event.updateGeneralEvent();
 //        event.addAllEvent();
     }
+
+    public void displayEvent() {
+        System.out.println("=====DisplayEvent======");
+        List<Event> events = normalEventDao.listEventByCate();
+        printEvents(events);
+    }
+    public void displayEventAdmin(){
+        System.out.println("=====DisplayEvent======");
+        List<Event> events = normalEventDao.listEventByCate();
+        printEvents(events);
+    }
+
+    public static void printEvents(List<Event> events) {
+        if (events.isEmpty()) {
+            System.out.println("No events found.");
+            return;
+        }
+
+        String leftAlignFormat = "| %-10s | %-30s | %-50s | %-20s | %-20s | %-30s | %-20s |%n";
+
+        System.out.format("+------------+--------------------------------+----------------------------------------------------+----------------------+----------------------+--------------------------------+----------------------+%n");
+        System.out.format("| Event ID   | Title                          | Description                                        | Start Time           | End Time             | Location                       | Category Name        |%n");
+        System.out.format("+------------+--------------------------------+----------------------------------------------------+----------------------+----------------------+--------------------------------+----------------------+%n");
+
+        for (Event event : events) {
+            System.out.format(leftAlignFormat, event.getEventId(),
+                    truncate(event.getTitle(), 30),
+                    truncate(event.getDescription(), 50),
+                    event.getStartDate().toString(),
+                    event.getEndDate().toString(),
+                    truncate(event.getLocation(), 30),
+                    truncate(event.getCategory().getCategoryName(), 20));
+        }
+
+        System.out.format("+------------+--------------------------------+----------------------------------------------------+----------------------+----------------------+--------------------------------+----------------------+%n");
+    }
+
+    private static String truncate(String str, int maxLength) {
+        if (str == null) {
+            return "";  // Hoặc một giá trị mặc định khác
+        }
+        if (str.length() <= maxLength) {
+            return str;
+        }
+        return str.substring(0, maxLength - 3) + "...";
+    }
 }

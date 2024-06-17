@@ -185,6 +185,68 @@ public class NormalEventDao {
         return event;
     }
 
+    public List<Event> listEventByCate() {
+        List<Event> events = new ArrayList<>();
+        DBUntil dbUntil = new DBUntil();
+        String query = "select * from events\n" +
+                "where categoryId = 1";
+
+        try (Connection conn = dbUntil.getCon();
+             PreparedStatement ps = conn.prepareStatement(query);) {
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Event event = new Event();
+                event.setEventId(rs.getInt("eventId"));
+                event.setTitle(rs.getString("title"));
+                event.setDescription(rs.getString("description"));
+                event.setStartDate(rs.getTimestamp("startTime"));
+                event.setEndDate(rs.getTimestamp("endTime"));
+                event.setLocation(rs.getString("location"));
+
+                EventCategories eventCategories = new EventCategories();
+                event.setCategory(eventCategories);
+                events.add(event);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return events;
+    }
+
+    public List<Event> listEventAdmin() {
+        List<Event> events = new ArrayList<>();
+        DBUntil dbUntil = new DBUntil();
+        String query = "select * from events\n" +
+                "where categoryId = 1";
+
+        try (Connection conn = dbUntil.getCon();
+             PreparedStatement ps = conn.prepareStatement(query);) {
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Event event = new Event();
+                event.setEventId(rs.getInt("eventId"));
+                event.setTitle(rs.getString("title"));
+                event.setDescription(rs.getString("description"));
+                event.setStartDate(rs.getTimestamp("startTime"));
+                event.setEndDate(rs.getTimestamp("endTime"));
+                event.setLocation(rs.getString("location"));
+
+                EventCategories eventCategories = new EventCategories();
+                event.setCategory(eventCategories);
+                events.add(event);
+            }
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+        return events;
+    }
+
 
     //phan2
     public List<Event> searchEventsByDate(int userId ,Timestamp startDate, Timestamp endDate) {

@@ -10,7 +10,7 @@ public class Validator {
     public final String REGEX_NAME = "[a-zA-Z ]+";
     public final String REGEX_ADDRESS = "[a-zA-Z0-9 ,.-/]+";
     public final String REGEX_CONFIRMATION = "^[ynYN]$";
-    public final String REGEX_DAY = "^(0[1-9]|[12][0-9]|3[01])$";
+    public final String REGEX_DAY = "^(0?[1-9]|[12][0-9]|3[01])$";
     public final String REGEX_MONTH = "^(0?[1-9]|1[0-2])$";
     public final String REGEX_YEAR = "^(19|20)\\d{2}$";
     public final String EMAIL_REGEX = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$";

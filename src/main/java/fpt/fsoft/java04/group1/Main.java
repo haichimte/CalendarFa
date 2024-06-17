@@ -133,7 +133,8 @@ public class Main {
     private static void ManageImportantsEvent(ImportantEvents event , int userId) {
 
         int choice = 0;
-
+        GeneralEvent generalEvent = new GeneralEvent();
+        generalEvent.displayEvent();
 
         while (true) {
             event.printImportantEvents(userId);
@@ -186,6 +187,7 @@ public class Main {
     private static void optionAdvanceForAdmin() {
         int choice = 0;
         GeneralEvent generalEvent = new GeneralEvent();
+        generalEvent.displayEvent();
         while (true) {
             System.out.println(
                     "Manager Calendar for Class \n" +
@@ -197,15 +199,18 @@ public class Main {
             switch (choice) {
                 case 1: {
                     generalEvent.addAllEvent();
+                    generalEvent.displayEvent();
                     break;
                 }
                 case 2: {
 generalEvent.updateGeneralEvent();
+                    generalEvent.displayEvent();
                     break;
                 }
                 case 3: {
                     //phan2
 generalEvent.removeGeneralEvent();
+                    generalEvent.displayEvent();
                     break;
                 }
                 case 4: {
