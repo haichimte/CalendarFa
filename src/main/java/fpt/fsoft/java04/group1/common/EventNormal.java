@@ -59,10 +59,15 @@ public class EventNormal {
         int idCategory = selectCategoryId();
 
         Event event = new Event(title, description, Start, End, location,new EventCategories(idCategory));
+        Event event2 = normalEventDao.checkEventExsist(title, description, Start, End, location,idCategory);
+        if (event2 != null) {
+            System.out.println("Event already exists");
+            return;
+        }
         normalEventDao.AddEvent(event);
 
         int id = importantEventDao.getLastestEventId();
-//        String add = participantsDao.addPartipant(userId,id);
+//
         String addParticipant = participantsDao.add(userId,id);
         System.out.println("Event added");
     }

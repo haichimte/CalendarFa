@@ -113,7 +113,7 @@ public class CategoryDao {
 
     public static void main(String[] args) {
         CategoryDao dao = new CategoryDao();
-        EventCategories cate = dao.checkCateExist("choi bo11i");
+        EventCategories cate = dao.checkCateExist("choi boi");
         System.out.println(cate);
 
     }

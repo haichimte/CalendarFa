@@ -8,7 +8,7 @@ import java.util.Scanner;
 
 public class UserCommon {
     public static User loggedInUser;
-    public void loginCommon( ) {
+    public User loginCommon() {
         Scanner sc = new Scanner(System.in);
         Validator va = new Validator();
 
@@ -25,15 +25,17 @@ public class UserCommon {
                 if (user != null){
                     loggedInUser = user;
                     check = true;
+                    System.out.println("Wellcom "+ user.getUserName());
                 }else {
                     System.out.println("Invalid email or password");
                 }
+                return user;
             }catch (Exception e){
                 System.out.println(e.getMessage());
             }
         }
 
-
+        return null;
 
     }
 }

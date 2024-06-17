@@ -15,6 +15,16 @@ public class Event {
     public Event() {
     }
 
+    public Event(int eventId, String title, String description, Timestamp startDate, Timestamp endDate, String location, EventCategories category) {
+        this.eventId = eventId;
+        this.title = title;
+        this.description = description;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.location = location;
+        this.category = category;
+    }
+
     public Event(String title, String description, Timestamp startDate, Timestamp endDate, String location, EventCategories category) {
         this.title = title;
         this.description = description;

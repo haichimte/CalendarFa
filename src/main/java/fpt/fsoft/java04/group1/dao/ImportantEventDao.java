@@ -89,15 +89,33 @@ public class ImportantEventDao {
         return result;
 
     }
-    public List<DisplayImportantEvent> displayImportantEvents() {
+    public List<DisplayImportantEvent> displayImportantEvents(int userId) {
         DBUntil dbUntil = new DBUntil();
         List<DisplayImportantEvent> list = new ArrayList<>();
-        String query = "select e.eventId,ime.priorityLevel,ime.note,e.title,e.description,e.startTime,e.endTime,e.location from [events] e\n" +
-                " inner join [importantEvents] ime\n" +
-                "on e.eventId = ime.eventId\n" +
-                "order by priorityLevel desc";
+        String query = "SELECT \n" +
+                "    e.eventId,\n" +
+                "    ime.priorityLevel,\n" +
+                "    ime.note,\n" +
+                "    e.title,\n" +
+                "    e.description,\n" +
+                "    e.startTime,\n" +
+                "    e.endTime,\n" +
+                "    e.location\n" +
+                "FROM \n" +
+                "    [events] e\n" +
+                "INNER JOIN \n" +
+                "    [importantEvents] ime\n" +
+                "ON \n" +
+                "    e.eventId = ime.eventId\n" +
+                "\tinner join \n" +
+                "\teventParticipants ept \n" +
+                "\ton ept.eventId = e.eventId\n" +
+                "\twhere ept.userId = ? \n" +
+                "ORDER BY \n" +
+                "    ime.priorityLevel DESC;";
         try (Connection conn = dbUntil.getCon();
              PreparedStatement ps = conn.prepareStatement(query);) {
+            ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {

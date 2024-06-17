@@ -50,9 +50,10 @@ public class UserDao {
                         rs.getString(2),
                         rs.getString(3),
                         rs.getString(4),
-                        rs.getString(5));
-                System.out.println("Well Come "+ u.getUserName());
+                        rs.getBoolean(5)?"admin":"user");
+
             }
+            return u;
         } catch (Exception e) {
             System.out.println(e.getMessage());
             System.out.println("Not have user");
