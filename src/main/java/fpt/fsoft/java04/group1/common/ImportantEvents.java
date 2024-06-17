@@ -2,6 +2,7 @@ package fpt.fsoft.java04.group1.common;
 
 import fpt.fsoft.java04.group1.dao.ImportantEventDao;
 import fpt.fsoft.java04.group1.dao.NormalEventDao;
+import fpt.fsoft.java04.group1.dao.eventParticipantsDao;
 import fpt.fsoft.java04.group1.model.DisplayImportantEvent;
 import fpt.fsoft.java04.group1.model.Event;
 import fpt.fsoft.java04.group1.model.EventCategories;
@@ -35,8 +36,8 @@ public class ImportantEvents {
         System.out.println("Event added");
     }
 
-    public static void printImportantEvents() {
-        List<DisplayImportantEvent> events = importantEventDao.displayImportantEvents();
+    public static void printImportantEvents(int userId) {
+        List<DisplayImportantEvent> events = importantEventDao.displayImportantEvents(userId);
 
         if (events.isEmpty()) {
             System.out.println("No events found.");
@@ -90,22 +91,27 @@ public class ImportantEvents {
 
 
     }
-    public void deleteEventId(){
+    public void deleteEventId( int userId){
 
+        eventParticipantsDao participantsDao = new eventParticipantsDao();
 
-
-        System.out.println("Event deleted");
         System.out.println("=============== Remove Event ================");
         int id = va.ValidateId("Type Id Event You Want to Remove: ", "Input must be Integer", "Input must be > 0", va.REGEX_PHONE);
-        ImportantEvent event = importantEventDao.GetImportantEventbyId(id);
-        if (event != null) {
+        Event eventid = normalEventDao.GetEventbyId(id);
+        ImportantEvent importantEvent = importantEventDao.GetImportantEventbyId(id);
+
+        if (eventid != null && importantEvent != null) {
+
+
+            String rulust = participantsDao.DeleteEventParticipants(id,userId);
+            String relult2 = importantEventDao.deleteImportantEvent(eventid.getEventId());
             normalEventDao.DeleteEvent(id);
-            importantEventDao.deleteImportantEvent(id);
             System.out.println("Event " + id + " removed");
-        } else {
+        }  else {
             System.out.println("Wrong Id");
         }
     }
+
 
 
 
